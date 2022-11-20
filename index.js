@@ -17,27 +17,33 @@ app.get("/",(req,res)=>{
 })
 
 app.post("/signup",async (req,res)=>{
-    let {username,password,category}=req.body;
-    bcrypt.hash(password,6).then(async function(hash){
-        const user = new UserModel({username,password:hash,category})
-        await user.save()
-        res.send({"msg":"Sign up Successfull"})
-    })
-    .catch(()=>{
-        res.send({"msg":"something went wrong"})
-    })
+    let {username,email,password,category}=req.body;
+    let userexist = await UserModel.findOne({email})
+    if(userexist){
+        res.send({"msg":"User already exist"});
+    }
+    else{
+        bcrypt.hash(password,6).then(async function(hash){
+            const user = new UserModel({username,email,password:hash,category})
+            await user.save()
+            res.send({"msg":"Sign up Successfull"})
+        })
+        .catch(()=>{
+            res.send({"msg":"something went wrong"})
+        })
+    }
 })
 
 app.post("/login",async (req,res)=>{
-    let {username,password} = req.body;
-    let user = await UserModel.findOne({username})
+    let {email,password} = req.body;
+    let user = await UserModel.findOne({email})
     console.log(user);
     let hash = user.password;
     bcrypt.compare(password,hash,function(err,result){
         if(result){
-            var token = jwt.sign({username:username},'secret');
+            var token = jwt.sign({email:email},'secret');
             console.log(token);
-            res.send({"user":req.body.username,"category":user.category,"msg":"login successfull","token":token})
+            res.send({"user":user.username,"category":user.category,"msg":"login successfull","token":token})
         }
         else{
             res.send("Login failed, invalid credentials")
