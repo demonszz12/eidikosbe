@@ -18,37 +18,39 @@ app.get("/",(req,res)=>{
 
 app.post("/signup",async (req,res)=>{
     let {username,email,password,category}=req.body;
-    let userexist = await UserModel.findOne({email})
-    if(userexist){
-        res.send({"msg":"User already exist"});
-    }
-    else{
-        bcrypt.hash(password,6).then(async function(hash){
-            const user = new UserModel({username,email,password:hash,category})
-            await user.save()
-            res.send({"msg":"Sign up Successfull"})
-        })
-        .catch(()=>{
-            res.send({"msg":"something went wrong"})
-        })
-    }
+    res.send({username,email,password,category})
+    // let userexist = await UserModel.findOne({email})
+    // if(userexist){
+    //     res.send({"msg":"User already exist"});
+    // }
+    // else{
+    //     bcrypt.hash(password,6).then(async function(hash){
+    //         const user = new UserModel({username,email,password:hash,category})
+    //         await user.save()
+    //         res.send({"msg":"Sign up Successfull"})
+    //     })
+    //     .catch(()=>{
+    //         res.send({"msg":"something went wrong"})
+    //     })
+    // }
 })
 
 app.post("/login",async (req,res)=>{
     let {email,password} = req.body;
-    let user = await UserModel.findOne({email})
-    console.log(user);
-    let hash = user.password;
-    bcrypt.compare(password,hash,function(err,result){
-        if(result){
-            var token = jwt.sign({email:email},'secret');
-            console.log(token);
-            res.send({"user":user.username,"category":user.category,"msg":"login successfull","token":token})
-        }
-        else{
-            res.send("Login failed, invalid credentials")
-        }
-    })
+    res.send({email,password})
+    // let user = await UserModel.findOne({email})
+    // console.log(user);
+    // let hash = user.password;
+    // bcrypt.compare(password,hash,function(err,result){
+    //     if(result){
+    //         var token = jwt.sign({email:email},'secret');
+    //         console.log(token);
+    //         res.send({"user":user.username,"category":user.category,"msg":"login successfull","token":token})
+    //     }
+    //     else{
+    //         res.send("Login failed, invalid credentials")
+    //     }
+    // })
 })
  
 
