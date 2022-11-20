@@ -18,8 +18,9 @@ app.get("/",(req,res)=>{
 
 app.post("/signup",async (req,res)=>{
     let {username,email,password,category}=req.body;
-    res.send({username,email,password,category})
-    // let userexist = await UserModel.findOne({email})
+    // res.send({username,email,password,category})
+    let userexist = await UserModel.findOne({email})
+    res.send(userexist)
     // if(userexist){
     //     res.send({"msg":"User already exist"});
     // }
@@ -37,9 +38,9 @@ app.post("/signup",async (req,res)=>{
 
 app.post("/login",async (req,res)=>{
     let {email,password} = req.body;
-    res.send({email,password})
-    // let user = await UserModel.findOne({email})
-    // console.log(user);
+    // res.send({email,password})
+    let user = await UserModel.findOne({email})
+    res.send({user})
     // let hash = user.password;
     // bcrypt.compare(password,hash,function(err,result){
     //     if(result){
